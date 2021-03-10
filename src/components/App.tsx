@@ -3,6 +3,9 @@ import { Layout } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { merge, $ } from "glamor";
 
+import { EntriesList } from "./entries-list";
+import { SelectedEntry } from "./selected-entry";
+
 const { Header, Sider, Content } = Layout;
 
 function App() {
@@ -29,17 +32,24 @@ function App() {
   }, []);
 
   const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [selectedEntry, setSelectedEntry] = React.useState("");
+
+  const handleClickEntry = (entry: any) => () => {
+    setSelectedEntry(entry);
+    console.log(entry);
+  };
 
   return (
     <Layout {...styles} style={{ minHeight: "100vh" }}>
       <Sider
+        className="sider"
         trigger={null}
         collapsible
         collapsed={isCollapsed}
         collapsedWidth={0}
         width={400}
       >
-        <div>Hello</div>
+        <EntriesList onClickEntry={handleClickEntry} />
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }}>
@@ -50,9 +60,11 @@ function App() {
               onClick: () => setIsCollapsed(!isCollapsed),
             }
           )}
-          Welcome to Reddit Client 
+          Welcome to Reddit Client
         </Header>
-        <Content className="site-layout-background content">Content</Content>
+        <Content className="site-layout-background content">
+          <SelectedEntry entry={selectedEntry} />
+        </Content>
       </Layout>
     </Layout>
   );

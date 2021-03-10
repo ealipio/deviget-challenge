@@ -1,9 +1,6 @@
 import React from "react";
-import { Layout, Menu } from "antd";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-} from "@ant-design/icons";
+import { Layout } from "antd";
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { merge, $ } from "glamor";
 
 const { Header, Sider, Content } = Layout;
@@ -22,6 +19,11 @@ function App() {
       }),
       $(" .site-layout .site-layout-background", {
         background: "#fff",
+      }),
+      $(" .content", {
+        margin: "24px 16px",
+        padding: 24,
+        minHeight: 280,
       })
     );
   }, []);
@@ -29,8 +31,14 @@ function App() {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   return (
-    <Layout {...styles} style={{ minHeight: '100vh' }}>
-      <Sider trigger={null} collapsible collapsed={isCollapsed} collapsedWidth={0} width={400}>
+    <Layout {...styles} style={{ minHeight: "100vh" }}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={isCollapsed}
+        collapsedWidth={0}
+        width={400}
+      >
         <div>Hello</div>
       </Sider>
       <Layout className="site-layout">
@@ -42,17 +50,9 @@ function App() {
               onClick: () => setIsCollapsed(!isCollapsed),
             }
           )}
+          Welcome to Reddit Client 
         </Header>
-        <Content
-          className="site-layout-background"
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: 280,
-          }}
-        >
-          Content
-        </Content>
+        <Content className="site-layout-background content">Content</Content>
       </Layout>
     </Layout>
   );

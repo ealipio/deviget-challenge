@@ -31,7 +31,7 @@ function App() {
         padding: 24,
         minHeight: 280,
       }),
-      $(" .sider", {
+      $(" .ant-layout-sider", {
         backgroundColor: palette.silver,
       })
     );
@@ -91,12 +91,10 @@ function App() {
   return (
     <Layout {...styles} style={{ minHeight: "100vh" }}>
       <Sider
-        className="sider"
         trigger={null}
         collapsible
         collapsed={isCollapsed}
-        collapsedWidth={0}
-        width={500}
+        width="50%"
       >
         <EntriesList
           onRemoveFromEntry={handleRemoveEntry}
@@ -115,7 +113,7 @@ function App() {
               onClick: () => setIsCollapsed(!isCollapsed),
             }
           )}
-          Welcome to Reddit Client
+          Reddit Client
         </Header>
         <Content className="site-layout-background content">
           {selectedEntry ? (

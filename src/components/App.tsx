@@ -31,19 +31,30 @@ function App() {
         minHeight: 280,
       }),
       $(" .sider", {
-        backgroundColor:"#333",
+        backgroundColor: "#333",
       })
     );
   }, []);
-
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const [selectedEntry, setSelectedEntry] = React.useState<IRedditEntry>();
+  const [entries, setEntries] = React.useState<IRedditEntry[]>([]);
 
-  const { data: entries, isLoading } = useFetchRedditEntries();
+  const { data, isLoading } = useFetchRedditEntries();
 
   const handleClickEntry = (entry: any) => () => {
     setSelectedEntry(entry);
   };
+
+  React.useEffect(() => {
+    if(data) {
+      setEntries(data)
+    }
+  }, [data])
+
+  const handleRemoveEntry = (entryId: string) => {
+    const newEntries = entries.filter((entry: IRedditEntry) => entry.id !== entryId)
+    setEntries(newEntries);
+  }
 
   return (
     <Layout {...styles} style={{ minHeight: "100vh" }}>
@@ -55,7 +66,12 @@ function App() {
         collapsedWidth={0}
         width={400}
       >
-        <EntriesList isLoading={isLoading} entries={entries} onClickEntry={handleClickEntry} />
+        <EntriesList
+          onRemoveFromEntry={handleRemoveEntry}
+          isLoading={isLoading}
+          entries={entries}
+          onClickEntry={handleClickEntry}
+        />
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }}>

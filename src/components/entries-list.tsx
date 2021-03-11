@@ -1,14 +1,14 @@
 import React from "react";
 import moment from "moment";
 import { merge, $ } from "glamor";
-import { MessageOutlined } from "@ant-design/icons";
-
+import { MessageOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { List, Avatar, Spin, Space } from "antd";
 
 import { IRedditEntry } from "../hooks/entries";
 
 interface EntriesListProps {
   onClickEntry: (entry: any) => (e: any) => void;
+  onRemoveFromEntry: (entryId: string) => void;  
   isLoading: boolean;
   entries: IRedditEntry[];
 }
@@ -16,21 +16,14 @@ interface EntriesListProps {
 interface IAction {
   icon: any;
   text: string | number;
+  entryId: string;
 }
 
-const IconText = ({ icon, text }: IAction) => (
-  <Space>
-    {React.createElement(icon, {
-      onClick: () => {
-        console.log("holis");
-      },
-    })}
-    {text}
-  </Space>
-);
+const DISMISS = "dismiss post";
 
 export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
   onClickEntry,
+  onRemoveFromEntry,
   isLoading,
   entries,
 }) => {
@@ -40,8 +33,11 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
       $(" .ant-list-item-meta-title > a", {
         color: "#80ce1c",
       }),
+      $(" .icon", {
+        color: "#F00",
+      }),
       $(" .ant-space-align-center", {
-        color: "#F0F",
+        color: "#bbb",
       }),
       $(" .content", {
         cursor: 'pointer',
@@ -54,6 +50,19 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
     );
   }, []);
 
+  const handleAction = (action: any, entryId: string) => () => {
+      if(action === DISMISS) {
+          onRemoveFromEntry(entryId)
+      }
+  }
+
+  const IconText = ({ icon, text, entryId }: IAction) => (
+    <Space>
+      {React.createElement(icon, {className:"icon", onClick: handleAction(text, entryId)})}
+      {text}
+    </Space>
+  );
+  
   if (isLoading) {
     return (
       <Spin
@@ -80,7 +89,14 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
               <IconText
                 icon={MessageOutlined}
                 text={redditEntry.num_comments}
+                entryId={redditEntry.id}
               />,
+              <IconText
+              icon={CloseCircleOutlined}
+              text={DISMISS}
+              entryId={redditEntry.id}
+            />,
+              
             ]}
           >
             <List.Item.Meta

@@ -5,12 +5,13 @@ import { MessageOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { List, Avatar, Button, Badge } from "antd";
 
 import { IRedditEntry } from "../hooks/entries";
+import { palette } from "../styles/theme";
 import { Spinner, IconText, DISMISS } from "../shared";
 
 interface EntriesListProps {
   onClickEntry: (entry: any) => (e: any) => void;
   onRemoveFromEntry: (entryId: string) => void;
-  onDisMissAll: () => void;  
+  onDisMissAll: () => void;
   isLoading: boolean;
   entries: IRedditEntry[];
 }
@@ -26,21 +27,27 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
     return merge(
       { padding: 20 },
       $(" .ant-list-item-meta-title > a", {
-        color: "#80ce1c",
+        color: palette.green,
       }),
       $(" .icon", {
-        color: "#F00",
+        color: palette.red,
       }),
       $(" .ant-space-align-center", {
-        color: "#bbb",
+        color: palette.gray,
       }),
       $(" .clickable", {
         cursor: "pointer",
       }),
-      $(" .ant-list-item-meta-description", { color: "#ddd", fontSize: 12 }),
+      $(" .ant-pagination, .ant-list-footer, .ant-list-header", {
+        textAlign: "center",
+      }),
+      $(" .ant-list-item-meta-description", {
+        color: palette.lightGray,
+        fontSize: 12,
+      }),
       $(" .ant-list-item", {
         fontSize: 18,
-        color: "#FFF",
+        color: palette.white,
       })
     );
   }, []);
@@ -95,7 +102,6 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
     [handleAction, onClickEntry]
   );
 
-
   if (isLoading) {
     return <Spinner />;
   }
@@ -105,8 +111,16 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
       <List
         itemLayout="vertical"
         dataSource={entries}
+        header={<h2>Reddit Posts</h2>}
         renderItem={handleRenderItem}
-        footer={<Button type="primary" onClick={onDisMissAll}>Dismiss All</Button>}
+        footer={
+          <Button type="primary" onClick={onDisMissAll}>
+            Dismiss All
+          </Button>
+        }
+        pagination={{
+          pageSize: 5,
+        }}
       />
     </div>
   );

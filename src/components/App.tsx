@@ -4,10 +4,10 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { merge, $ } from "glamor";
 
 import { useFetchRedditEntries, IRedditEntry } from "../hooks/entries";
-
 import { EntriesList } from "./entries-list";
 import { SelectedEntry } from "./selected-entry";
 import { SkeletonEntry } from "../shared/skeleton-entry";
+import { palette } from "../styles/theme";
 
 const { Header, Sider, Content } = Layout;
 
@@ -21,10 +21,10 @@ function App() {
         transition: "color 0.3s",
       }),
       $(" .trigger:hover", {
-        color: "#1890ff",
+        color: palette.blue,
       }),
       $(" .site-layout .site-layout-background", {
-        background: "#fff",
+        background: palette.white,
       }),
       $(" .content", {
         margin: "24px 16px",
@@ -32,7 +32,7 @@ function App() {
         minHeight: 280,
       }),
       $(" .sider", {
-        backgroundColor: "#333",
+        backgroundColor: palette.silver,
       })
     );
   }, []);
@@ -47,8 +47,8 @@ function App() {
       const newEntries = entries.map((entry) => {
         if (entry.id === entryId) {
           const newEntry = { ...entry, clicked: true };
-          console.log(newEntry)
-          return newEntry
+          console.log(newEntry);
+          return newEntry;
         }
         return entry;
       });
@@ -57,13 +57,16 @@ function App() {
     [entries]
   );
 
-  const handleClickEntry = (entry: IRedditEntry) => () => {
-    setSelectedEntry(entry);
-    // by default clicked is false
-    if (!entry.clicked) {
-      changeClickedStateFromEntries(entry.id);
-    }
-  };
+  const handleClickEntry = React.useCallback(
+    (entry: IRedditEntry) => () => {
+      setSelectedEntry(entry);
+      // by default clicked is false
+      if (!entry.clicked) {
+        changeClickedStateFromEntries(entry.id);
+      }
+    },
+    [changeClickedStateFromEntries]
+  );
 
   React.useEffect(() => {
     if (data) {
@@ -94,7 +97,7 @@ function App() {
         collapsible
         collapsed={isCollapsed}
         collapsedWidth={0}
-        width={350}
+        width={500}
       >
         <EntriesList
           onRemoveFromEntry={handleRemoveEntry}

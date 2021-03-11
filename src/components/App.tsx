@@ -3,6 +3,8 @@ import { Layout } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { merge, $ } from "glamor";
 
+import { useFetchRedditEntries, IRedditEntry } from "../hooks/entries";
+
 import { EntriesList } from "./entries-list";
 import { SelectedEntry } from "./selected-entry";
 
@@ -32,11 +34,12 @@ function App() {
   }, []);
 
   const [isCollapsed, setIsCollapsed] = React.useState(false);
-  const [selectedEntry, setSelectedEntry] = React.useState("");
+  const [selectedEntry, setSelectedEntry] = React.useState<IRedditEntry>();
+
+  const { data: entries, isLoading } = useFetchRedditEntries();
 
   const handleClickEntry = (entry: any) => () => {
     setSelectedEntry(entry);
-    console.log(entry);
   };
 
   return (
@@ -49,7 +52,7 @@ function App() {
         collapsedWidth={0}
         width={400}
       >
-        <EntriesList onClickEntry={handleClickEntry} />
+        <EntriesList isLoading={isLoading} entries={entries} onClickEntry={handleClickEntry} />
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }}>
@@ -63,7 +66,7 @@ function App() {
           Welcome to Reddit Client
         </Header>
         <Content className="site-layout-background content">
-          <SelectedEntry entry={selectedEntry} />
+          {selectedEntry && <SelectedEntry entry={selectedEntry} />}
         </Content>
       </Layout>
     </Layout>

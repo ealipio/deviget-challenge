@@ -1,8 +1,9 @@
 import React from "react";
 import { merge, $ } from "glamor";
 
+import { IRedditEntry } from "../hooks/entries";
 interface SelectedEntryProps {
-    entry: any
+    entry: IRedditEntry
 }
 
 export const SelectedEntry: React.FunctionComponent<SelectedEntryProps> = ({entry}) => {
@@ -15,6 +16,7 @@ export const SelectedEntry: React.FunctionComponent<SelectedEntryProps> = ({entr
 
   return (
     <div {...styles}>
+        <img src={entry.thumbnail} alt="reddit"/>
         {entry.title}
     </div>
   );

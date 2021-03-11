@@ -94,7 +94,8 @@ function App() {
         trigger={null}
         collapsible
         collapsed={isCollapsed}
-        width="51%"
+        collapsedWidth={0}
+        width="50%"
       >
         <EntriesList
           onRemoveFromEntry={handleRemoveEntry}

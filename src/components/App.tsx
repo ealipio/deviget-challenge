@@ -7,6 +7,7 @@ import { useFetchRedditEntries, IRedditEntry } from "../hooks/entries";
 
 import { EntriesList } from "./entries-list";
 import { SelectedEntry } from "./selected-entry";
+import { SkeletonEntry } from "../shared/skeleton-entry";
 
 const { Header, Sider, Content } = Layout;
 
@@ -41,20 +42,49 @@ function App() {
 
   const { data, isLoading } = useFetchRedditEntries();
 
-  const handleClickEntry = (entry: any) => () => {
+  const changeClickedStateFromEntries = React.useCallback(
+    (entryId: string) => {
+      const newEntries = entries.map((entry) => {
+        if (entry.id === entryId) {
+          const newEntry = { ...entry, clicked: true };
+          console.log(newEntry)
+          return newEntry
+        }
+        return entry;
+      });
+      setEntries(newEntries);
+    },
+    [entries]
+  );
+
+  const handleClickEntry = (entry: IRedditEntry) => () => {
     setSelectedEntry(entry);
+    // by default clicked is false
+    if (!entry.clicked) {
+      changeClickedStateFromEntries(entry.id);
+    }
   };
 
   React.useEffect(() => {
-    if(data) {
-      setEntries(data)
+    if (data) {
+      setEntries(data);
+      setSelectedEntry(data[0]);
     }
-  }, [data])
+  }, [data]);
 
-  const handleRemoveEntry = (entryId: string) => {
-    const newEntries = entries.filter((entry: IRedditEntry) => entry.id !== entryId)
-    setEntries(newEntries);
-  }
+  const handleRemoveEntry = React.useCallback(
+    (entryId: string) => {
+      const newEntries = entries.filter(
+        (entry: IRedditEntry) => entry.id !== entryId
+      );
+      setEntries(newEntries);
+    },
+    [entries]
+  );
+
+  const handleDisMissAll = React.useCallback(() => {
+    setEntries([]);
+  }, []);
 
   return (
     <Layout {...styles} style={{ minHeight: "100vh" }}>
@@ -64,13 +94,14 @@ function App() {
         collapsible
         collapsed={isCollapsed}
         collapsedWidth={0}
-        width={400}
+        width={350}
       >
         <EntriesList
           onRemoveFromEntry={handleRemoveEntry}
           isLoading={isLoading}
           entries={entries}
           onClickEntry={handleClickEntry}
+          onDisMissAll={handleDisMissAll}
         />
       </Sider>
       <Layout className="site-layout">
@@ -85,7 +116,11 @@ function App() {
           Welcome to Reddit Client
         </Header>
         <Content className="site-layout-background content">
-          {selectedEntry && <SelectedEntry entry={selectedEntry} />}
+          {selectedEntry ? (
+            <SelectedEntry entry={selectedEntry} />
+          ) : (
+            <SkeletonEntry />
+          )}
         </Content>
       </Layout>
     </Layout>

@@ -2,28 +2,23 @@ import React from "react";
 import moment from "moment";
 import { merge, $ } from "glamor";
 import { MessageOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import { List, Avatar, Spin, Space } from "antd";
+import { List, Avatar, Button, Badge } from "antd";
 
 import { IRedditEntry } from "../hooks/entries";
+import { Spinner, IconText, DISMISS } from "../shared";
 
 interface EntriesListProps {
   onClickEntry: (entry: any) => (e: any) => void;
-  onRemoveFromEntry: (entryId: string) => void;  
+  onRemoveFromEntry: (entryId: string) => void;
+  onDisMissAll: () => void;  
   isLoading: boolean;
   entries: IRedditEntry[];
 }
 
-interface IAction {
-  icon: any;
-  text: string | number;
-  entryId: string;
-}
-
-const DISMISS = "dismiss post";
-
 export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
   onClickEntry,
   onRemoveFromEntry,
+  onDisMissAll,
   isLoading,
   entries,
 }) => {
@@ -39,8 +34,8 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
       $(" .ant-space-align-center", {
         color: "#bbb",
       }),
-      $(" .content", {
-        cursor: 'pointer',
+      $(" .clickable", {
+        cursor: "pointer",
       }),
       $(" .ant-list-item-meta-description", { color: "#ddd", fontSize: 12 }),
       $(" .ant-list-item", {
@@ -50,31 +45,59 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
     );
   }, []);
 
-  const handleAction = (action: any, entryId: string) => () => {
-      if(action === DISMISS) {
-          onRemoveFromEntry(entryId)
+  const handleAction = React.useCallback(
+    (action: any, entryId: string) => () => {
+      if (action === DISMISS) {
+        onRemoveFromEntry(entryId);
       }
-  }
-
-  const IconText = ({ icon, text, entryId }: IAction) => (
-    <Space>
-      {React.createElement(icon, {className:"icon", onClick: handleAction(text, entryId)})}
-      {text}
-    </Space>
+    },
+    [onRemoveFromEntry]
   );
-  
+
+  const handleRenderItem = React.useCallback(
+    (redditEntry: IRedditEntry) => (
+      <List.Item
+        key={redditEntry.id}
+        actions={[
+          <IconText
+            icon={MessageOutlined}
+            text={redditEntry.num_comments}
+            entryId={redditEntry.id}
+            onActionClick={handleAction}
+          />,
+          <IconText
+            icon={CloseCircleOutlined}
+            text={DISMISS}
+            entryId={redditEntry.id}
+            onActionClick={handleAction}
+          />,
+        ]}
+      >
+        <List.Item.Meta
+          avatar={<Avatar src={redditEntry.thumbnail} />}
+          title={
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`https://www.reddit.com/user/${redditEntry.author}`}
+            >
+              {!redditEntry.clicked && <Badge status="processing" />}
+              {redditEntry.author}
+            </a>
+          }
+          description={moment.unix(redditEntry.created).fromNow()}
+        />
+        <span className="clickable" onClick={onClickEntry(redditEntry)}>
+          {redditEntry.title}
+        </span>
+      </List.Item>
+    ),
+    [handleAction, onClickEntry]
+  );
+
+
   if (isLoading) {
-    return (
-      <Spin
-        size="large"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-        }}
-      />
-    );
+    return <Spinner />;
   }
 
   return (
@@ -82,39 +105,8 @@ export const EntriesList: React.FunctionComponent<EntriesListProps> = ({
       <List
         itemLayout="vertical"
         dataSource={entries}
-        renderItem={(redditEntry: IRedditEntry) => (
-          <List.Item
-            key={redditEntry.id}
-            actions={[
-              <IconText
-                icon={MessageOutlined}
-                text={redditEntry.num_comments}
-                entryId={redditEntry.id}
-              />,
-              <IconText
-              icon={CloseCircleOutlined}
-              text={DISMISS}
-              entryId={redditEntry.id}
-            />,
-              
-            ]}
-          >
-            <List.Item.Meta
-              avatar={<Avatar src={redditEntry.thumbnail} />}
-              title={
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  href={`https://www.reddit.com/user/${redditEntry.author}`}
-                >
-                  {redditEntry.author}
-                </a>
-              }
-              description={moment.unix(redditEntry.created).fromNow()}
-            />
-            <span className="content" onClick={onClickEntry(redditEntry)}>{redditEntry.title}</span>
-          </List.Item>
-        )}
+        renderItem={handleRenderItem}
+        footer={<Button type="primary" onClick={onDisMissAll}>Dismiss All</Button>}
       />
     </div>
   );

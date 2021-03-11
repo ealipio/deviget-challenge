@@ -6,6 +6,12 @@ import { parseRedditResponse } from "../utils/reddit-utils";
 const ENTRIES_LIMIT = 50;
 const DEFAULT_SUB_REDDIT = "funny";
 
+export interface IAction {
+  icon: any;
+  text: string | number;
+  entryId: string;
+}
+
 export interface IRedditEntry {
   title: string;
   thumbnail: string;

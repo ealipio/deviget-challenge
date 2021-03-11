@@ -16,8 +16,9 @@ export const SelectedEntry: React.FunctionComponent<SelectedEntryProps> = ({entr
 
   return (
     <div {...styles}>
+        <h2>{entry.author}</h2>
         <img src={entry.thumbnail} alt="reddit"/>
-        {entry.title}
+        <p>{entry.title}</p>
     </div>
   );
 };

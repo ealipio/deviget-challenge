@@ -11,9 +11,11 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "antd": "^4.13.1",
+    "axios": "^0.21.1",
     "glamor": "^2.20.40",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-query": "^3.12.1",
     "react-scripts": "4.0.3",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"

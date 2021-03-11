@@ -6,5 +6,5 @@
 * read/unread status
 * dismiss all feature
 ## Live Page: 
-[https://deviget-challenge-git-main-eisson.vercel.app/](https://deviget-challenge-git-main-eisson.vercel.app/)
+[https://deviget-challenge-2lzxlhs8a-eisson.vercel.app/](https://deviget-challenge-2lzxlhs8a-eisson.vercel.app/)
 

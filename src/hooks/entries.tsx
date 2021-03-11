@@ -14,6 +14,7 @@ export interface IRedditEntry {
   clicked: boolean;
   id: string;
   created: number;
+  num_comments: number;
 }
 
 export function useFetchRedditEntries(

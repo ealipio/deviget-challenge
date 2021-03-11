@@ -47,7 +47,6 @@ function App() {
       const newEntries = entries.map((entry) => {
         if (entry.id === entryId) {
           const newEntry = { ...entry, clicked: true };
-          console.log(newEntry);
           return newEntry;
         }
         return entry;
